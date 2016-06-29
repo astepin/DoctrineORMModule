@@ -59,7 +59,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
             ),
         );
         $this->serviceManager->setService('Config', $config);
-        $ormConfig = $this->factory->createService($this->serviceManager);
+        $ormConfig = ($this->factory)($this->serviceManager, '');
         $this->assertInstanceOf('Doctrine\ORM\Mapping\NamingStrategy', $ormConfig->getNamingStrategy());
     }
 
@@ -78,7 +78,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
         );
         $this->serviceManager->setService('Config', $config);
         $factory = new ConfigurationFactory('test_default');
-        $ormConfig = $factory->createService($this->serviceManager);
+        $ormConfig = $factory($this->serviceManager, '');
         $this->assertSame($namingStrategy, $ormConfig->getNamingStrategy());
     }
 
@@ -96,7 +96,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
         );
         $this->serviceManager->setService('Config', $config);
         $this->serviceManager->setService('test_naming_strategy', $namingStrategy);
-        $ormConfig = $this->factory->createService($this->serviceManager);
+        $ormConfig = ($this->factory)($this->serviceManager, '');
         $this->assertSame($namingStrategy, $ormConfig->getNamingStrategy());
     }
 
@@ -113,7 +113,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
         );
         $this->serviceManager->setService('Config', $config);
         $this->setExpectedException('Zend\ServiceManager\Exception\InvalidArgumentException');
-        $this->factory->createService($this->serviceManager);
+        ($this->factory)($this->serviceManager, '');
     }
 
     public function testWillInstantiateConfigWithHydrationCacheSetting()
@@ -129,7 +129,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
         );
         $this->serviceManager->setService('Config', $config);
         $factory = new ConfigurationFactory('test_default');
-        $ormConfig = $factory->createService($this->serviceManager);
+        $ormConfig = $factory($this->serviceManager, '');
         $this->assertInstanceOf('Doctrine\Common\Cache\ArrayCache', $ormConfig->getHydrationCacheImpl());
     }
 
@@ -151,7 +151,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
         $this->serviceManager->setService('Config', $config);
 
         $factory = new ConfigurationFactory('test_default');
-        $ormConfig = $factory->createService($this->serviceManager);
+        $ormConfig = $factory($this->serviceManager, '');
         $this->assertInstanceOf('Doctrine\Common\Cache\ArrayCache', $ormConfig->getHydrationCacheImpl());
     }
 
@@ -168,7 +168,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
         );
         $this->serviceManager->setService('Config', $config);
         $factory = new ConfigurationFactory('test_default');
-        $ormConfig = $factory->createService($this->serviceManager);
+        $ormConfig = $factory($this->serviceManager, '');
         $this->assertEquals('Factory', $ormConfig->getClassMetadataFactoryName());
     }
 
@@ -184,7 +184,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
         );
         $this->serviceManager->setService('Config', $config);
         $factory = new ConfigurationFactory('test_default');
-        $ormConfig = $factory->createService($this->serviceManager);
+        $ormConfig = $factory($this->serviceManager, '');
         $this->assertEquals('Doctrine\ORM\Mapping\ClassMetadataFactory', $ormConfig->getClassMetadataFactoryName());
     }
 
@@ -200,7 +200,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->serviceManager->setService('Config', $config);
 
-        $ormConfig = $this->factory->createService($this->serviceManager);
+        $ormConfig = ($this->factory)($this->serviceManager, '');
 
         $this->assertInstanceOf('Doctrine\ORM\Mapping\EntityListenerResolver', $ormConfig->getEntityListenerResolver());
     }
@@ -221,7 +221,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->serviceManager->setService('Config', $config);
 
-        $ormConfig = $this->factory->createService($this->serviceManager);
+        $ormConfig = ($this->factory)($this->serviceManager, '');
 
         $this->assertSame($entityListenerResolver, $ormConfig->getEntityListenerResolver());
     }
@@ -243,7 +243,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
         $this->serviceManager->setService('Config', $config);
         $this->serviceManager->setService('test_entity_listener_resolver', $entityListenerResolver);
 
-        $ormConfig = $this->factory->createService($this->serviceManager);
+        $ormConfig = ($this->factory)($this->serviceManager, '');
 
         $this->assertSame($entityListenerResolver, $ormConfig->getEntityListenerResolver());
     }
@@ -260,7 +260,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->serviceManager->setService('Config', $config);
 
-        $ormConfig = $this->factory->createService($this->serviceManager);
+        $ormConfig = ($this->factory)($this->serviceManager, '');
 
         $this->assertNull($ormConfig->getSecondLevelCacheConfiguration());
     }
@@ -298,7 +298,7 @@ class ConfigurationFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->serviceManager->setService('Config', $config);
 
-        $ormConfig        = $this->factory->createService($this->serviceManager);
+        $ormConfig        = ($this->factory)($this->serviceManager, '');
         $secondLevelCache = $ormConfig->getSecondLevelCacheConfiguration();
         
         $this->assertInstanceOf('Doctrine\ORM\Cache\CacheConfiguration', $secondLevelCache);

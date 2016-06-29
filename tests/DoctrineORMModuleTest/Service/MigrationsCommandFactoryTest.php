@@ -51,7 +51,7 @@ class MigrationsCommandFactoryTest extends TestCase
 
         $this->assertInstanceOf(
             'Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand',
-            $factory->createService($this->serviceLocator)
+            $factory($this->serviceLocator, '')
         );
     }
 
@@ -61,7 +61,7 @@ class MigrationsCommandFactoryTest extends TestCase
 
         $this->assertInstanceOf(
             'Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand',
-            $factory->createService($this->serviceLocator)
+            $factory($this->serviceLocator, '')
         );
     }
 
@@ -70,6 +70,6 @@ class MigrationsCommandFactoryTest extends TestCase
         $factory = new MigrationsCommandFactory('unknowncommand');
 
         $this->setExpectedException('InvalidArgumentException');
-        $factory->createService($this->serviceLocator);
+        $factory($this->serviceLocator, '');
     }
 }

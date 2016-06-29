@@ -57,6 +57,7 @@ class ServiceManagerFactory
         );
         $serviceManagerConfig->configureServiceManager($serviceManager);
         $serviceManager->setService('ApplicationConfig', static::$config);
+        $serviceManager->setAlias('Config', 'Configuration');
 
         /** @var $moduleManager \Zend\ModuleManager\ModuleManager */
         $moduleManager = $serviceManager->get('ModuleManager');

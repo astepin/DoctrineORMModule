@@ -24,16 +24,20 @@ use Doctrine\ORM\Cache\DefaultCacheFactory;
 use Doctrine\ORM\Cache\RegionsConfiguration;
 use Doctrine\ORM\Mapping\EntityListenerResolver;
 use DoctrineORMModule\Service\DBALConfigurationFactory as DoctrineConfigurationFactory;
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\Exception\InvalidArgumentException;
 use Doctrine\ORM\Configuration;
 
 class ConfigurationFactory extends DoctrineConfigurationFactory
 {
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    /**
+     * {@inheritDoc}
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         /** @var $options \DoctrineORMModule\Options\Configuration */
-        $options = $this->getOptions($serviceLocator);
+        $options = $this->getOptions($container);
         $config  = new Configuration();
 
         $config->setAutoGenerateProxyClasses($options->getGenerateProxies());
@@ -64,19 +68,19 @@ class ConfigurationFactory extends DoctrineConfigurationFactory
             $config->addFilter($name, $class);
         }
 
-        $config->setMetadataCacheImpl($serviceLocator->get($options->getMetadataCache()));
-        $config->setQueryCacheImpl($serviceLocator->get($options->getQueryCache()));
-        $config->setResultCacheImpl($serviceLocator->get($options->getResultCache()));
-        $config->setHydrationCacheImpl($serviceLocator->get($options->getHydrationCache()));
-        $config->setMetadataDriverImpl($serviceLocator->get($options->getDriver()));
+        $config->setMetadataCacheImpl($container->get($options->getMetadataCache()));
+        $config->setQueryCacheImpl($container->get($options->getQueryCache()));
+        $config->setResultCacheImpl($container->get($options->getResultCache()));
+        $config->setHydrationCacheImpl($container->get($options->getHydrationCache()));
+        $config->setMetadataDriverImpl($container->get($options->getDriver()));
 
         if ($namingStrategy = $options->getNamingStrategy()) {
             if (is_string($namingStrategy)) {
-                if (!$serviceLocator->has($namingStrategy)) {
+                if (!$container->has($namingStrategy)) {
                     throw new InvalidArgumentException(sprintf('Naming strategy "%s" not found', $namingStrategy));
                 }
 
-                $config->setNamingStrategy($serviceLocator->get($namingStrategy));
+                $config->setNamingStrategy($container->get($namingStrategy));
             } else {
                 $config->setNamingStrategy($namingStrategy);
             }
@@ -84,13 +88,13 @@ class ConfigurationFactory extends DoctrineConfigurationFactory
 
         if ($repositoryFactory = $options->getRepositoryFactory()) {
             if (is_string($repositoryFactory)) {
-                if (!$serviceLocator->has($repositoryFactory)) {
+                if (!$container->has($repositoryFactory)) {
                     throw new InvalidArgumentException(
                         sprintf('Repository factory "%s" not found', $repositoryFactory)
                     );
                 }
 
-                $config->setRepositoryFactory($serviceLocator->get($repositoryFactory));
+                $config->setRepositoryFactory($container->get($repositoryFactory));
             } else {
                 $config->setRepositoryFactory($repositoryFactory);
             }
@@ -100,7 +104,7 @@ class ConfigurationFactory extends DoctrineConfigurationFactory
             if ($entityListenerResolver instanceof EntityListenerResolver) {
                 $config->setEntityListenerResolver($entityListenerResolver);
             } else {
-                $config->setEntityListenerResolver($serviceLocator->get($entityListenerResolver));
+                $config->setEntityListenerResolver($container->get($entityListenerResolver));
             }
         }
 
@@ -138,7 +142,7 @@ class ConfigurationFactory extends DoctrineConfigurationFactory
             $config->setDefaultRepositoryClassName($className);
         }
 
-        $this->setupDBALConfiguration($serviceLocator, $config);
+        $this->setupDBALConfiguration($container, $config);
 
         return $config;
     }

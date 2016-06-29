@@ -21,8 +21,8 @@ namespace DoctrineORMModule\Service;
 
 use DoctrineModule\Service\AbstractFactory;
 use DoctrineORMModule\Form\Annotation\AnnotationBuilder;
+use Interop\Container\ContainerInterface;
 use Zend\Form\Factory;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Service factory responsible for instantiating {@see \DoctrineORMModule\Form\Annotation\AnnotationBuilder}
@@ -38,14 +38,14 @@ class FormAnnotationBuilderFactory extends AbstractFactory
      *
      * @return \DoctrineORMModule\Form\Annotation\AnnotationBuilder
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         /* @var $entityManager \Doctrine\ORM\EntityManager */
-        $entityManager = $serviceLocator->get('doctrine.entitymanager.' . $this->getName());
+        $entityManager = $container->get('doctrine.entitymanager.' . $this->getName());
 
         $annotationBuilder = new AnnotationBuilder($entityManager);
         
-        $annotationBuilder->setFormFactory($this->getFormFactory($serviceLocator));
+        $annotationBuilder->setFormFactory($this->getFormFactory($container));
 
         return $annotationBuilder;
     }
@@ -60,15 +60,15 @@ class FormAnnotationBuilderFactory extends AbstractFactory
     /**
      * Retrieve the form factory
      *
-     * @param  ServiceLocatorInterface $services
+     * @param  ContainerInterface $container
      * @return Factory
      */
-    private function getFormFactory(ServiceLocatorInterface $services)
+    private function getFormFactory(ContainerInterface $container)
     {
         $elements = null;
         
-        if ($services->has('FormElementManager')) {
-            $elements = $services->get('FormElementManager');
+        if ($container->has('FormElementManager')) {
+            $elements = $container->get('FormElementManager');
         }
 
         return new Factory($elements);

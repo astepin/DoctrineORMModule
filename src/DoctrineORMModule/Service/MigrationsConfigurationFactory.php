@@ -21,7 +21,7 @@ namespace DoctrineORMModule\Service;
 
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 use DoctrineModule\Service\AbstractFactory;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 /**
  * DBAL Connection ServiceManager factory
@@ -37,12 +37,12 @@ class MigrationsConfigurationFactory extends AbstractFactory
      *
      * @return \Doctrine\DBAL\Migrations\Configuration\Configuration
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $name             = $this->getName();
         /* @var $connection \Doctrine\DBAL\Connection */
-        $connection       = $serviceLocator->get('doctrine.connection.' . $name);
-        $appConfig        = $serviceLocator->get('Config');
+        $connection       = $container->get('doctrine.connection.' . $name);
+        $appConfig        = $container->get('Config');
         $migrationsConfig = $appConfig['doctrine']['migrations_configuration'][$name];
         $configuration    = new Configuration($connection);
 

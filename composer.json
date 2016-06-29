@@ -9,6 +9,12 @@
         "module",
         "zf2"
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/astepin/DoctrineModule"
+        }
+    ],
     "homepage":          "http://www.doctrine-project.org/",
     "authors":           [
         {
@@ -32,17 +38,17 @@
         }
     ],
     "require":           {
-        "php":                               "^5.5 || ^7.0",
-        "doctrine/doctrine-module":          "~1.0",
+        "php":                               "^5.6 || ^7.0",
+        "doctrine/doctrine-module":          "dev-master",
         "doctrine/orm":                      ">=2.5,<2.7",
         "doctrine/dbal":                     ">=2.4,<2.7",
-        "zendframework/zend-stdlib":         "~2.3",
-        "zendframework/zend-mvc":            "~2.3",
-        "zendframework/zend-servicemanager": "~2.3",
+        "zendframework/zend-stdlib":         "~3.0",
+        "zendframework/zend-mvc":            "~3.0",
+        "zendframework/zend-servicemanager": "~3.1",
         "symfony/console":                   "~2.5|~3.0"
     },
     "require-dev":       {
-        "zendframework/zendframework":        "~2.3",
+        "zendframework/zendframework":        "~3.0",
         "doctrine/data-fixtures":             "1.0.*",
         "zendframework/zend-developer-tools": "*",
         "doctrine/migrations":                "1.0.*@dev",

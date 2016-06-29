@@ -36,7 +36,9 @@ class FormAnnotationBuilderFactoryTest extends PHPUnit_Framework_TestCase
     public function testFormElementManagerGetsInjected()
     {
         $entityManager      = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
-        $formElementManager = $this->getMock('Zend\Form\FormElementManager');
+        $formElementManager = $this->getMockBuilder('Zend\Form\FormElementManager')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $serviceManager = new ServiceManager();
 
@@ -44,7 +46,7 @@ class FormAnnotationBuilderFactoryTest extends PHPUnit_Framework_TestCase
         $serviceManager->setService('FormElementManager', $formElementManager);
 
         $annotationBuilderFactory = new FormAnnotationBuilderFactory('test');
-        $annotationBuilder = $annotationBuilderFactory->createService($serviceManager);
+        $annotationBuilder = $annotationBuilderFactory($serviceManager, '');
 
         $this->assertSame($formElementManager, $annotationBuilder->getFormFactory()->getFormElementManager());
     }

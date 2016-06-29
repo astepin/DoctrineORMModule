@@ -21,7 +21,7 @@ namespace DoctrineORMModule\Service;
 
 use Doctrine\ORM\EntityManager;
 use DoctrineModule\Service\AbstractFactory;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 class EntityManagerFactory extends AbstractFactory
 {
@@ -29,17 +29,17 @@ class EntityManagerFactory extends AbstractFactory
      * {@inheritDoc}
      * @return EntityManager
      */
-    public function createService(ServiceLocatorInterface $sl)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         /* @var $options \DoctrineORMModule\Options\EntityManager */
-        $options    = $this->getOptions($sl, 'entitymanager');
-        $connection = $sl->get($options->getConnection());
-        $config     = $sl->get($options->getConfiguration());
+        $options    = $this->getOptions($container, 'entitymanager');
+        $connection = $container->get($options->getConnection());
+        $config     = $container->get($options->getConfiguration());
 
         // initializing the resolver
         // @todo should actually attach it to a fetched event manager here, and not
         //       rely on its factory code
-        $sl->get($options->getEntityResolver());
+        $container->get($options->getEntityResolver());
 
         return EntityManager::create($connection, $config);
     }

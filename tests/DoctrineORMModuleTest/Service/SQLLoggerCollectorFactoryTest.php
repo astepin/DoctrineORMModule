@@ -61,7 +61,7 @@ class SQLLoggerCollectorFactoryTest extends TestCase
                 ),
             )
         );
-        $service = $this->factory->createService($this->services);
+        $service = ($this->factory)($this->services,'');
         $this->assertInstanceOf('DoctrineORMModule\Collector\SQLLoggerCollector', $service);
         $this->assertInstanceOf('Doctrine\DBAL\Logging\SQLLogger', $configuration->getSQLLogger());
     }
@@ -82,7 +82,7 @@ class SQLLoggerCollectorFactoryTest extends TestCase
                 ),
             )
         );
-        $this->factory->createService($this->services);
+        ($this->factory)($this->services, '');
         $this->assertInstanceOf('Doctrine\DBAL\Logging\SQLLogger', $configuration->getSQLLogger());
     }
 
@@ -115,7 +115,7 @@ class SQLLoggerCollectorFactoryTest extends TestCase
                 ),
             )
         );
-        $this->factory->createService($this->services);
+        ($this->factory)($this->services, '');
         /* @var $logger \Doctrine\DBAL\Logging\SQLLogger */
         $logger = $configuration->getSQLLogger();
         $logger->startQuery('test query');
@@ -139,7 +139,7 @@ class SQLLoggerCollectorFactoryTest extends TestCase
                 ),
             )
         );
-        $this->factory->createService($this->services);
+        ($this->factory)($this->services, '');
         $this->assertSame($logger, $configuration->getSQLLogger());
     }
 
@@ -159,7 +159,7 @@ class SQLLoggerCollectorFactoryTest extends TestCase
             )
         );
         /* @var $service \DoctrineORMModule\Collector\SQLLoggerCollector */
-        $service = $this->factory->createService($this->services);
+        $service = ($this->factory)($this->services, '');
         $this->assertSame('doctrine.sql_logger_collector.test_collector_name', $service->getName());
     }
 }

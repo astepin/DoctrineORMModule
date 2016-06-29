@@ -21,7 +21,7 @@ namespace DoctrineORMModule\Service;
 
 use DoctrineModule\Service\AbstractFactory;
 use DoctrineORMModule\Collector\MappingCollector;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 /**
  * Service factory responsible for instantiating {@see \DoctrineORMModule\Collector\MappingCollector}
@@ -37,11 +37,11 @@ class MappingCollectorFactory extends AbstractFactory
      *
      * @return \DoctrineORMModule\Collector\MappingCollector
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $name          = $this->getName();
         /* @var $objectManager \Doctrine\Common\Persistence\ObjectManager */
-        $objectManager = $serviceLocator->get('doctrine.entitymanager.' . $name);
+        $objectManager = $container->get('doctrine.entitymanager.' . $name);
 
         return new MappingCollector($objectManager->getMetadataFactory(), 'doctrine.mapping_collector.' . $name);
     }

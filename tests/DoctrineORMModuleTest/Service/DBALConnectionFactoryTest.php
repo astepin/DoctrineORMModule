@@ -78,7 +78,7 @@ class DBALConnectionFactoryTest extends PHPUnit_Framework_TestCase
         $this->serviceManager->setService('Config', $config);
         $this->serviceManager->setService('Configuration', $config);
 
-        $dbal = $this->factory->createService($this->serviceManager);
+        $dbal = ($this->factory)($this->serviceManager, '');
         $platform = $dbal->getDatabasePlatform();
         $this->assertSame('string', $platform->getDoctrineTypeMapping("money"));
     }
@@ -119,9 +119,9 @@ class DBALConnectionFactoryTest extends PHPUnit_Framework_TestCase
         $configurationFactory = new ConfigurationFactory('orm_default');
         $this->serviceManager->setService(
             'doctrine.configuration.orm_default',
-            $configurationFactory->createService($this->serviceManager)
+            $configurationFactory($this->serviceManager, '')
         );
-        $dbal = $this->factory->createService($this->serviceManager);
+        $dbal = ($this->factory)($this->serviceManager, '');
         $platform = $dbal->getDatabasePlatform();
         $type = Type::getType($platform->getDoctrineTypeMapping("money"));
 

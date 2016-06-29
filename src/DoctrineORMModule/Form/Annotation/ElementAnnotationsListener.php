@@ -22,7 +22,6 @@ namespace DoctrineORMModule\Form\Annotation;
 use ArrayObject;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use DoctrineModule\Form\Element;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -48,7 +47,7 @@ class ElementAnnotationsListener extends AbstractListenerAggregate
     /**
      * {@inheritDoc}
      */
-    public function attach(EventManagerInterface $events)
+    public function attach(EventManagerInterface $events, $priority = 1)
     {
         $this->listeners[] = $events->attach(
             AnnotationBuilder::EVENT_CONFIGURE_FIELD,

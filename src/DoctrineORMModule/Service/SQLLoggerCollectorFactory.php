@@ -19,8 +19,8 @@
 
 namespace DoctrineORMModule\Service;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use RuntimeException;
 use DoctrineORMModule\Collector\SQLLoggerCollector;
 use Doctrine\DBAL\Logging\DebugStack;
@@ -51,20 +51,20 @@ class SQLLoggerCollectorFactory implements FactoryInterface
     /**
      * {@inheritDoc}
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         /** @var $options \DoctrineORMModule\Options\SQLLoggerCollectorOptions */
-        $options = $this->getOptions($serviceLocator);
+        $options = $this->getOptions($container);
 
         // @todo always ask the serviceLocator instead? (add a factory?)
         if ($options->getSqlLogger()) {
-            $debugStackLogger = $serviceLocator->get($options->getSqlLogger());
+            $debugStackLogger = $container->get($options->getSqlLogger());
         } else {
             $debugStackLogger = new DebugStack();
         }
 
         /* @var $configuration \Doctrine\ORM\Configuration */
-        $configuration = $serviceLocator->get($options->getConfiguration());
+        $configuration = $container->get($options->getConfiguration());
 
         if (null !== $configuration->getSQLLogger()) {
             $logger = new LoggerChain();
@@ -79,13 +79,13 @@ class SQLLoggerCollectorFactory implements FactoryInterface
     }
 
     /**
-     * @param  ServiceLocatorInterface $serviceLocator
+     * @param  ContainerInterface $container
      * @return mixed
      * @throws RuntimeException
      */
-    protected function getOptions(ServiceLocatorInterface $serviceLocator)
+    protected function getOptions(ContainerInterface $container)
     {
-        $options = $serviceLocator->get('Config');
+        $options = $container->get('Config');
         $options = $options['doctrine'];
         $options = isset($options['sql_logger_collector'][$this->name])
             ? $options['sql_logger_collector'][$this->name]
